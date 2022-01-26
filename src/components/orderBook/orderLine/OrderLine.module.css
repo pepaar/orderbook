@@ -6,6 +6,19 @@
   flex-direction: row-reverse;
 }
 
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 32px;
+}
+
+.row > span {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+}
+
 .normalText {
   color: white;
 }
