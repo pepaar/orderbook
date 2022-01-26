@@ -1,0 +1,17 @@
+.container {
+  display: flex;
+  flex: 1;
+  position: relative;
+  border-bottom: 0.5px solid gray;
+  padding: 12px 0;
+}
+
+.title {
+  position: absolute;
+}
+
+.spread {
+  color: gray;
+  text-align: center;
+  flex: 1;
+}

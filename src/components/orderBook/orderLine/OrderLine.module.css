@@ -1,0 +1,25 @@
+.container {
+  display: flex;
+}
+
+.reversedContainer {
+  flex-direction: row-reverse;
+}
+
+.normalText {
+  color: white;
+}
+
+.greenText {
+  color: green;
+}
+
+.redText {
+  color: red;
+}
+
+.titleText {
+  margin-top: 8px;
+  color: gray;
+  font-weight: bold;
+}
