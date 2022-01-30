@@ -11,6 +11,7 @@ const maxLevelsCount = 15;
 let socket: WebSocket;
 let onDataUpdate: ((data: OrderBook) => void) | null = null;
 let orderBookState: OrderBook | null = null;
+let currentCurrency: Currency;
 
 export function initialize(onNewData: (data: OrderBook) => void): Promise<void> {
   onDataUpdate = onNewData;
@@ -45,14 +46,20 @@ export async function connect(): Promise<void> {
 
         if (parsedData?.feed === "book_ui_1_snapshot" && parsedData?.bids && parsedData?.asks) {
           const snapshot = parsedData as SnapshotResponseMessage;
-          orderBookState = mapSnapshotToData(snapshot, orderBookState);
-          onDataUpdate?.(orderBookState);
+
+          if (snapshot.product_id === currencyToMessageProductId(currentCurrency)) {
+            orderBookState = mapSnapshotToData(snapshot);
+            onDataUpdate?.(orderBookState);
+          }
         }
 
         if (parsedData?.feed === "book_ui_1" && parsedData?.bids && parsedData?.asks) {
           const delta = parsedData as DeltaResponseMessage;
-          orderBookState = mapDeltaToData(delta, orderBookState);
-          onDataUpdate?.(orderBookState);
+
+          if (delta.product_id === currencyToMessageProductId(currentCurrency)) {
+            orderBookState = mapDeltaToData(delta, orderBookState);
+            onDataUpdate?.(orderBookState);
+          }
         }
       } catch {
         // Something is wrong with server data
@@ -67,18 +74,13 @@ export function disconnect(): void {
 }
 
 export async function subscribe(currency: Currency): Promise<void> {
+  currentCurrency = currency;
+
   if (socket.readyState === WebSocket.CLOSED || socket.readyState === WebSocket.CLOSING) {
     await connect();
   }
 
-  orderBookState = {
-    currency,
-    asks: [],
-    bids: [],
-    highestTotal: 0,
-  };
-
-  const message: SubscriptionMessage = { ...openMessage, product_ids: currencyToMessageProductIds(currency) };
+  const message: SubscriptionMessage = { ...openMessage, product_ids: [currencyToMessageProductId(currency)] };
   socket.send(JSON.stringify(message));
 }
 
@@ -87,28 +89,24 @@ export function unsubscribe(currency: Currency): void {
     return;
   }
 
-  const message: SubscriptionMessage = { ...closeMessage, product_ids: currencyToMessageProductIds(currency) };
+  const message: SubscriptionMessage = { ...closeMessage, product_ids: [currencyToMessageProductId(currency)] };
   socket.send(JSON.stringify(message));
 }
 
-const currencyToMessageProductIds = (currency: Currency) => {
+const currencyToMessageProductId = (currency: Currency) => {
   switch (currency) {
     case "Bitcoin":
-      return ["PI_XBTUSD"];
+      return "PI_XBTUSD";
     case "Ethereum":
-      return ["PI_ETHUSD"];
+      return "PI_ETHUSD";
     default:
       throw new Error("Invalid currency");
   }
 };
 
-const mapSnapshotToData = (data: SnapshotResponseMessage, currentBook: OrderBook | null) => {
-  if (!currentBook) {
-    throw new Error("Book needs to be defined");
-  }
-
+const mapSnapshotToData = (data: SnapshotResponseMessage) => {
   const book: OrderBook = {
-    ...currentBook,
+    currency: currentCurrency,
     asks: [],
     bids: [],
     highestTotal: 0,

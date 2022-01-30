@@ -28,7 +28,10 @@ export const useOrderBookData = (currency: Currency) => {
         setError("Something went wrong!");
       });
 
-    return () => api.unsubscribe(currency);
+    return () => {
+      api.unsubscribe(currency);
+      onNewData.flush();
+    };
   }, [currency]);
 
   React.useEffect(() => {
