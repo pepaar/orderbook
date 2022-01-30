@@ -12,7 +12,7 @@ export const OrderBook: React.FC<Props> = ({ orderBook }) => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <OrderBookHeader topAsk={orderBook.asks[0]?.price} topBid={orderBook.bids[0]?.price} />
+        <OrderBookHeader topAsk={orderBook.asks[0]?.price} topBid={orderBook.bids[0]?.price} currency={orderBook.currency} />
       </div>
       <div className={styles.bids}>
         <OrderBookSide isBidsSide={true} orders={orderBook.bids} highestTotal={orderBook.highestTotal} isLeftAligned={false} />

@@ -45,7 +45,7 @@ export async function initialize(onNewData: (data: OrderBook) => void): Promise<
 
       if (parsedData?.feed === "book_ui_1_snapshot" && parsedData?.bids && parsedData?.asks) {
         const snapshot = parsedData as SnapshotResponseMessage;
-        orderBookState = mapSnapshotToData(snapshot);
+        orderBookState = mapSnapshotToData(snapshot, orderBookState);
         onNewData(orderBookState);
       }
 
@@ -63,6 +63,13 @@ export function close(): void {
 }
 
 export function subscribe(currency: Currency): void {
+  orderBookState = {
+    currency,
+    asks: [],
+    bids: [],
+    highestTotal: 0,
+  };
+
   const message: SubscriptionMessage = { ...openMessage, product_ids: currencyToMessageProductIds(currency) };
   socket.send(JSON.stringify(message));
 }
@@ -83,8 +90,13 @@ const currencyToMessageProductIds = (currency: Currency) => {
   }
 };
 
-const mapSnapshotToData = (data: SnapshotResponseMessage) => {
+const mapSnapshotToData = (data: SnapshotResponseMessage, currentBook: OrderBook | null) => {
+  if (!currentBook) {
+    throw new Error("Book needs to be defined");
+  }
+
   const book: OrderBook = {
+    ...currentBook,
     asks: [],
     bids: [],
     highestTotal: 0,
@@ -114,6 +126,8 @@ const mapSnapshotToData = (data: SnapshotResponseMessage) => {
     });
   });
 
+  book.bids = book.bids.slice(maxLevelsCount);
+  book.asks = book.asks.slice(maxLevelsCount);
   book.highestTotal = bidsTotal > asksTotal ? bidsTotal : asksTotal;
 
   return book;

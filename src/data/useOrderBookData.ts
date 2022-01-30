@@ -4,7 +4,7 @@ import * as api from "../api/api";
 import { Currency } from "../api/api";
 import { OrderBook } from "./types";
 
-export const useOrderBookData = (currency: Currency, levelsCount: number = 20) => {
+export const useOrderBookData = (currency: Currency) => {
   const [data, setData] = React.useState<OrderBook>();
   const [loading, setLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<string>();
@@ -21,7 +21,7 @@ export const useOrderBookData = (currency: Currency, levelsCount: number = 20) =
         setLoading(false);
 
         setTimeout(() => {
-          api.unsubscribe("Bitcoin");
+          api.unsubscribe(currency);
         }, 10000);
       })
       .catch(() => {
