@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  border-radius: 2px;
+  background-color: #ffcb66;
+  color: black;
+}
+
+.text {
+  margin-right: 8px;
+  display: flex;
+  flex: 1;
+}

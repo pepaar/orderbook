@@ -1,6 +1,6 @@
 import React from "react";
 import { Currency } from "../../api/api";
-import styles from "./ToggleFeed.module.css";
+import { Button } from "../common/button/Button";
 
 interface Props {
   currency: Currency;
@@ -13,9 +13,5 @@ export const ToggleFeed: React.FC<Props> = ({ currency, setCurrency }) => {
     setCurrency(newCurrency);
   }, [currency, setCurrency]);
 
-  return (
-    <button onClick={toggleCurrency} className={styles.button}>
-      ToggleFeed
-    </button>
-  );
+  return <Button onClick={toggleCurrency} text="ToggleFeed" />;
 };

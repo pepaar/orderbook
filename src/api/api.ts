@@ -6,18 +6,23 @@ export type OrderBookData = SnapshotResponseMessage | DeltaResponseMessage;
 
 const openMessage: SubscriptionMessage = { event: "subscribe", feed: "book_ui_1", product_ids: [] };
 const closeMessage: SubscriptionMessage = { event: "unsubscribe", feed: "book_ui_1", product_ids: [] };
-const maxLevelsCount = 20;
+const maxLevelsCount = 15;
 
-const socket = new WebSocket("wss://www.cryptofacilities.com/ws/v1");
-let isInitialized = false;
+let socket: WebSocket;
+let onDataUpdate: ((data: OrderBook) => void) | null = null;
 let orderBookState: OrderBook | null = null;
 
-export async function initialize(onNewData: (data: OrderBook) => void): Promise<void> {
-  if (isInitialized) {
+export function initialize(onNewData: (data: OrderBook) => void): Promise<void> {
+  onDataUpdate = onNewData;
+  return connect();
+}
+
+export async function connect(): Promise<void> {
+  if (socket && socket.readyState === WebSocket.OPEN) {
     return;
   }
 
-  isInitialized = true;
+  socket = new WebSocket("wss://www.cryptofacilities.com/ws/v1");
 
   return new Promise((resolve, reject) => {
     socket.onopen = (event) => {
@@ -32,37 +37,40 @@ export async function initialize(onNewData: (data: OrderBook) => void): Promise<
 
     socket.onclose = (event) => {
       console.log("WS disconnect: ", event);
-
-      // TODO: reconnect here:
-      // console.log("WS Reconnecting");
-      // socket.connect();
     };
 
     socket.onmessage = (event) => {
-      console.log(`WS got message`, event.data);
+      try {
+        const parsedData = JSON.parse(event.data);
 
-      const parsedData = JSON.parse(event.data);
+        if (parsedData?.feed === "book_ui_1_snapshot" && parsedData?.bids && parsedData?.asks) {
+          const snapshot = parsedData as SnapshotResponseMessage;
+          orderBookState = mapSnapshotToData(snapshot, orderBookState);
+          onDataUpdate?.(orderBookState);
+        }
 
-      if (parsedData?.feed === "book_ui_1_snapshot" && parsedData?.bids && parsedData?.asks) {
-        const snapshot = parsedData as SnapshotResponseMessage;
-        orderBookState = mapSnapshotToData(snapshot, orderBookState);
-        onNewData(orderBookState);
-      }
-
-      if (parsedData?.feed === "book_ui_1" && parsedData?.bids && parsedData?.asks) {
-        const delta = parsedData as DeltaResponseMessage;
-        orderBookState = mapDeltaToData(delta, orderBookState);
-        onNewData(orderBookState);
+        if (parsedData?.feed === "book_ui_1" && parsedData?.bids && parsedData?.asks) {
+          const delta = parsedData as DeltaResponseMessage;
+          orderBookState = mapDeltaToData(delta, orderBookState);
+          onDataUpdate?.(orderBookState);
+        }
+      } catch {
+        // Something is wrong with server data
+        // Log error
       }
     };
   });
 }
 
-export function close(): void {
+export function disconnect(): void {
   socket.close();
 }
 
-export function subscribe(currency: Currency): void {
+export async function subscribe(currency: Currency): Promise<void> {
+  if (socket.readyState === WebSocket.CLOSED || socket.readyState === WebSocket.CLOSING) {
+    await connect();
+  }
+
   orderBookState = {
     currency,
     asks: [],
@@ -75,6 +83,10 @@ export function subscribe(currency: Currency): void {
 }
 
 export function unsubscribe(currency: Currency): void {
+  if (socket.readyState !== WebSocket.OPEN) {
+    return;
+  }
+
   const message: SubscriptionMessage = { ...closeMessage, product_ids: currencyToMessageProductIds(currency) };
   socket.send(JSON.stringify(message));
 }
@@ -107,11 +119,13 @@ const mapSnapshotToData = (data: SnapshotResponseMessage, currentBook: OrderBook
     const [price, size] = bid;
     bidsTotal += size;
 
-    book.bids.push({
-      price,
-      size,
-      total: bidsTotal,
-    });
+    if (book.bids.length < maxLevelsCount) {
+      book.bids.push({
+        price,
+        size,
+        total: bidsTotal,
+      });
+    }
   });
 
   let asksTotal = 0;
@@ -119,15 +133,15 @@ const mapSnapshotToData = (data: SnapshotResponseMessage, currentBook: OrderBook
     const [price, size] = ask;
     asksTotal += size;
 
-    book.asks.push({
-      price,
-      size,
-      total: asksTotal,
-    });
+    if (book.asks.length < maxLevelsCount) {
+      book.asks.push({
+        price,
+        size,
+        total: asksTotal,
+      });
+    }
   });
 
-  book.bids = book.bids.slice(maxLevelsCount);
-  book.asks = book.asks.slice(maxLevelsCount);
   book.highestTotal = bidsTotal > asksTotal ? bidsTotal : asksTotal;
 
   return book;
