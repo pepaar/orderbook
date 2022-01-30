@@ -1,16 +1,13 @@
-.container {
-  display: flex;
-}
-
-.reversedContainer {
-  flex-direction: row-reverse;
-}
-
 .row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 32px;
+  padding: 0 24px;
+}
+
+.rowReverse {
+  flex-direction: row-reverse;
 }
 
 .row > span {

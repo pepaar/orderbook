@@ -14,10 +14,17 @@ interface Props {
 export const OrderLine: React.FC<Props> = (props) => {
   const levelDepth = (props.order.total / props.highestTotal) * 100;
   const bgColor = priceColorToBackgroundColor(props.priceColor);
-  const lineBackgroundStyle = `linear-gradient(to left, ${bgColor} ${levelDepth}%, transparent ${levelDepth}%)`;
+  const lineBackgroundStyle = `linear-gradient(to ${
+    props.isLeftAligned ? "right" : "left"
+  }, ${bgColor} ${levelDepth}%, transparent ${levelDepth}%)`;
+
+  let rowStyle = styles.row;
+  if (!props.isLeftAligned) {
+    rowStyle += ` ${styles.rowReverse}`;
+  }
 
   return (
-    <div className={styles.row} style={{ background: lineBackgroundStyle }}>
+    <div className={rowStyle} style={{ background: lineBackgroundStyle }}>
       <span className={priceTextStyles(props.priceColor)}>{formatNumericValue(props.order.price)}</span>
       <span className={styles.normalText}>{formatNumericValue(props.order.size)}</span>
       <span className={styles.normalText}>{formatNumericValue(props.order.total)}</span>
@@ -26,8 +33,13 @@ export const OrderLine: React.FC<Props> = (props) => {
 };
 
 export const OrderLineTitle: React.FC<{ isLeftAligned: boolean }> = ({ isLeftAligned }) => {
+  let rowStyle = styles.row;
+  if (!isLeftAligned) {
+    rowStyle += ` ${styles.rowReverse}`;
+  }
+
   return (
-    <div className={styles.row}>
+    <div className={rowStyle}>
       <span className={styles.titleText}>PRICE</span>
       <span className={styles.titleText}>SIZE</span>
       <span className={styles.titleText}>TOTAL</span>

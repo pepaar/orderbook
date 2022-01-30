@@ -8,19 +8,27 @@ interface Props {
   highestTotal: number;
   isLeftAligned: boolean;
   isBidsSide: boolean;
+  hideTitle?: boolean;
+  reverseOrder?: boolean;
 }
 
-export const OrderBookSide: React.FC<Props> = ({ orders, highestTotal, isLeftAligned, isBidsSide }) => {
+export const OrderBookSide: React.FC<Props> = (props) => {
+  let orders = props.orders;
+
+  if (props.reverseOrder) {
+    orders = [...orders].reverse();
+  }
+
   return (
     <div className={styles.container}>
-      <OrderLineTitle isLeftAligned={isLeftAligned} />
+      {!props.hideTitle && <OrderLineTitle isLeftAligned={props.isLeftAligned} />}
       {orders.map((order) => (
         <OrderLine
           key={order.price}
           order={order}
-          highestTotal={highestTotal}
-          isLeftAligned={isLeftAligned}
-          priceColor={isBidsSide ? "green" : "red"}
+          highestTotal={props.highestTotal}
+          isLeftAligned={props.isLeftAligned}
+          priceColor={props.isBidsSide ? "green" : "red"}
         />
       ))}
     </div>

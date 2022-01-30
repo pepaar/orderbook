@@ -1,11 +1,18 @@
 .container {
   display: grid;
-  grid-template-columns: 1fr 24px 1fr;
+  grid-template-columns: 1fr 1px 1fr;
   grid-template-rows: auto;
   grid-template-areas:
     "header header header"
     "bids divider asks";
   max-width: 1000px;
+}
+
+@media screen and (max-width: 680px) {
+  .container {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 .header {
@@ -26,9 +33,10 @@
   display: flex;
   flex: 1;
   justify-content: center;
+  background-color: #262626;
 }
 
-.dividerLine {
-  width: 0.5px;
-  background-color: gray;
+.spread {
+  display: flex;
+  margin: 12px 0;
 }
