@@ -1,5 +1,5 @@
 import React from "react";
-import { Order } from "../../../data/types";
+import { Order } from "../../../state/orderBookState";
 import styles from "./OrderLine.module.css";
 
 type PriceColor = "green" | "red";

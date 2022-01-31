@@ -3,19 +3,21 @@ import { useWindowSize } from "react-use";
 import { OrderBookHeader } from "./orderBookHeader/OrderBookHeader";
 import { OrderBookSide } from "./orderBookSide/OrderBookSide";
 import styles from "./OrderBook.module.css";
-import { OrderBook as OrderBookType } from "../../data/types";
 import { Spread } from "./spread/Spread";
+import { useRecoilValue } from "recoil";
+import { orderBookState } from "../../state/orderBookState";
 
 const oneColumnBreakpoint = 680;
 
-interface Props {
-  orderBook: OrderBookType;
-}
-
-export const OrderBook: React.FC<Props> = ({ orderBook }) => {
+export const OrderBook: React.FC = () => {
+  const orderBook = useRecoilValue(orderBookState);
   const { width } = useWindowSize();
-  const isOneColumnView = width <= oneColumnBreakpoint;
 
+  if (!orderBook) {
+    return null;
+  }
+
+  const isOneColumnView = width <= oneColumnBreakpoint;
   const spread = <Spread topAsk={orderBook.asks[0]?.price} topBid={orderBook.bids[0]?.price} />;
 
   return (

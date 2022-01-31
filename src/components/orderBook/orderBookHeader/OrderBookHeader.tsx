@@ -1,5 +1,5 @@
 import React from "react";
-import { Currency } from "../../../api/api";
+import { Currency } from "../../../state/orderBookState";
 import styles from "./OrderBookHeader.module.css";
 
 interface Props {

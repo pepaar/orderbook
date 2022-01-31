@@ -18,3 +18,5 @@ export interface SubscriptionMessage {
   feed: string;
   product_ids: string[];
 }
+
+export type OrderBookData = SnapshotResponseMessage | DeltaResponseMessage;
