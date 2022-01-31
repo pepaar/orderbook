@@ -17,6 +17,7 @@ export interface OrderBook {
 
 export interface ConnectionState {
   isOnline: boolean;
+  error: string | null;
 }
 
 export const orderBookState = atom<OrderBook | null>({
@@ -33,5 +34,6 @@ export const connectionState = atom<ConnectionState>({
   key: "connectionState",
   default: {
     isOnline: true,
+    error: null,
   },
 });

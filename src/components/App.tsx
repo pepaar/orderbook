@@ -6,12 +6,12 @@ import { OrderBook } from "./orderBook/OrderBook";
 import { ToggleFeed } from "./toogleFeed/ToggleFeed";
 
 const App: React.FC = () => {
-  const { isOnline, reconnect } = useOrderBookDataSubscription();
+  const { reconnect } = useOrderBookDataSubscription();
 
   return (
     <div className={styles.container}>
       <header>
-        <OfflineHeader isOnline={isOnline} reconnect={reconnect} />
+        <OfflineHeader reconnect={reconnect} />
       </header>
       <main>
         <OrderBook />
