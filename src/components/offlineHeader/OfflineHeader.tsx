@@ -17,9 +17,9 @@ export const OfflineHeader: React.FC<Props> = ({ reconnect }) => {
   const text = connection.error ?? "You are offline and data is not up to date!";
 
   return (
-    <div className={styles.container}>
+    <header className={styles.container}>
       <span className={styles.text}>{text}</span>
       <Button onClick={reconnect} text="Reconnect" />
-    </div>
+    </header>
   );
 };

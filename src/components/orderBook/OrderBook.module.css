@@ -28,11 +28,11 @@
 
 .divider {
   grid-area: divider;
-  height: 100%;
   display: flex;
   flex: 1;
   justify-content: center;
-  background-color: #262626;
+  height: 100%;
+  background-color: #1c1c1c;
 }
 
 .spread {

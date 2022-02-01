@@ -35,13 +35,13 @@ export const useOrderBookDataSubscription = () => {
     };
   }, [currency, setConnection, setOrderBook]);
 
-  React.useEffect(() => {
-    window.onblur = () => {
-      api.unsubscribe(currency);
-      api.disconnect();
-      setConnection((current) => ({ isOnline: false, error: current.error }));
-    };
-  }, [currency, setConnection]);
+  // // React.useEffect(() => {
+  // //   window.onblur = () => {
+  // //     api.unsubscribe(currency);
+  // //     api.disconnect();
+  // //     setConnection((current) => ({ isOnline: false, error: current.error }));
+  // //   };
+  // // }, [currency, setConnection]);
 
   const reconnect = React.useCallback(() => {
     if (!connection.isOnline) {

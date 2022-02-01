@@ -24,7 +24,7 @@ export const OrderBookSide: React.FC<Props> = (props) => {
       {!props.hideTitle && <OrderLineTitle isLeftAligned={props.isLeftAligned} />}
       {orders.map((order) => (
         <OrderLine
-          key={order.price}
+          key={`${props.isBidsSide ? "bid" : "ask"}_${order.price}`}
           order={order}
           highestTotal={props.highestTotal}
           isLeftAligned={props.isLeftAligned}

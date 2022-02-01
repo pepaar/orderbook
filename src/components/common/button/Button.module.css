@@ -7,3 +7,7 @@
   font-weight: bold;
   cursor: pointer;
 }
+
+.button:hover {
+  background-color: #442fbd;
+}

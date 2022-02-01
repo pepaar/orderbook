@@ -2,6 +2,7 @@ import React from "react";
 import { useRecoilState } from "recoil";
 import { Currency, selectedCurrencyState } from "../../state/orderBookState";
 import { Button } from "../common/button/Button";
+import styles from "./ToggleFeed.module.css";
 
 export const ToggleFeed: React.FC = () => {
   const [currency, setCurrency] = useRecoilState(selectedCurrencyState);
@@ -11,5 +12,9 @@ export const ToggleFeed: React.FC = () => {
     setCurrency(newCurrency);
   }, [currency, setCurrency]);
 
-  return <Button onClick={toggleCurrency} text="Toggle Feed" />;
+  return (
+    <footer className={styles.footer}>
+      <Button onClick={toggleCurrency} text="Toggle Feed" />
+    </footer>
+  );
 };

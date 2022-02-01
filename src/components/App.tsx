@@ -1,5 +1,5 @@
 import React from "react";
-import { useOrderBookDataSubscription } from "../data/orderBookData";
+import { useOrderBookDataSubscription } from "../data/useOrderBookDataSubscription";
 import styles from "./App.module.css";
 import { ErrorBoundary } from "./common/errorBoundary/ErrorBoundary";
 import { OfflineHeader } from "./offlineHeader/OfflineHeader";
@@ -12,15 +12,9 @@ const App: React.FC = () => {
   return (
     <ErrorBoundary>
       <div className={styles.container}>
-        <header>
-          <OfflineHeader reconnect={reconnect} />
-        </header>
-        <main>
-          <OrderBook />
-        </main>
-        <footer className={styles.footer}>
-          <ToggleFeed />
-        </footer>
+        <OfflineHeader reconnect={reconnect} />
+        <OrderBook />
+        <ToggleFeed />
       </div>
     </ErrorBoundary>
   );
