@@ -11,5 +11,5 @@ export const ToggleFeed: React.FC = () => {
     setCurrency(newCurrency);
   }, [currency, setCurrency]);
 
-  return <Button onClick={toggleCurrency} text="ToggleFeed" />;
+  return <Button onClick={toggleCurrency} text="Toggle Feed" />;
 };

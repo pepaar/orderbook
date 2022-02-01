@@ -44,11 +44,11 @@ export async function connect(): Promise<void> {
 
     socket.onmessage = (event) => {
       try {
-        const parsedData = JSON.parse(event.data);
-
         if (!dataCallbacks) {
           return;
         }
+
+        const parsedData = JSON.parse(event.data);
 
         if (parsedData?.feed === "book_ui_1_snapshot" && parsedData?.bids && parsedData?.asks) {
           const snapshot = parsedData as SnapshotResponseMessage;
