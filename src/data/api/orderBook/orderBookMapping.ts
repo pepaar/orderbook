@@ -1,4 +1,4 @@
-import { Currency, Order, OrderBook } from "../../state/orderBookState";
+import { Currency, Order, OrderBook } from "../../../state/orderBook";
 import { DeltaResponseMessage, SnapshotResponseMessage } from "./orderBookModel";
 
 const maxLevelsCount = 15;
@@ -25,7 +25,7 @@ export const messageProductIdToCurrency = (productId: string): Currency => {
   }
 };
 
-export const mapSnapshotToData = (data: SnapshotResponseMessage) => {
+export const mapSnapshotToData = (data: SnapshotResponseMessage): OrderBook => {
   const { orders: bids, total: bidsTotal } = processSnapshotOrderInputArray(data.bids);
   const { orders: asks, total: asksTotal } = processSnapshotOrderInputArray(data.asks);
 

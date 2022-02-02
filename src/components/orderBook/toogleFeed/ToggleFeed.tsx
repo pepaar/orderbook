@@ -1,7 +1,7 @@
 import React from "react";
 import { useRecoilState } from "recoil";
-import { Currency, selectedCurrencyState } from "../../state/orderBookState";
-import { Button } from "../common/button/Button";
+import { Currency, selectedCurrencyState } from "../../../state/orderBook";
+import { Button } from "../../common/button/Button";
 import styles from "./ToggleFeed.module.css";
 
 export const ToggleFeed: React.FC = () => {

@@ -1,5 +1,5 @@
 import React from "react";
-import { Order } from "../../../state/orderBookState";
+import { Order } from "../../../state/orderBook";
 import { OrderLineTitle, OrderLine } from "../orderLine/OrderLine";
 import styles from "./OrderBookSide.module.css";
 

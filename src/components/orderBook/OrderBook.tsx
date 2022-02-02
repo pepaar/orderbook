@@ -5,7 +5,7 @@ import { OrderBookSide } from "./orderBookSide/OrderBookSide";
 import styles from "./OrderBook.module.css";
 import { Spread } from "./spread/Spread";
 import { useRecoilValue } from "recoil";
-import { orderBookState } from "../../state/orderBookState";
+import { orderBookState } from "../../state/orderBook";
 
 const oneColumnBreakpoint = 680;
 

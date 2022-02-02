@@ -1,6 +1,6 @@
 import React from "react";
-import * as api from "./api/orderBookApi";
-import { connectionState, OrderBook, orderBookState, selectedCurrencyState } from "../state/orderBookState";
+import * as api from "./api/orderBook/orderBookApi";
+import { connectionState, OrderBook, orderBookState, selectedCurrencyState } from "../state/orderBook";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { throttle } from "lodash";
 
@@ -19,7 +19,7 @@ export const useOrderBookDataSubscription = () => {
     api
       .initialize({
         setNewOrderBook: (book) => onNewData(book),
-        getCurrentCurrency: () => currency,
+        currentCurrency: currency,
       })
       .then(() => {
         api.subscribe(currency);
@@ -35,13 +35,13 @@ export const useOrderBookDataSubscription = () => {
     };
   }, [currency, setConnection, setOrderBook]);
 
-  // // React.useEffect(() => {
-  // //   window.onblur = () => {
-  // //     api.unsubscribe(currency);
-  // //     api.disconnect();
-  // //     setConnection((current) => ({ isOnline: false, error: current.error }));
-  // //   };
-  // // }, [currency, setConnection]);
+  React.useEffect(() => {
+    window.onblur = () => {
+      api.unsubscribe(currency);
+      api.disconnect();
+      setConnection((current) => ({ isOnline: false, error: current.error }));
+    };
+  }, [currency, setConnection]);
 
   const reconnect = React.useCallback(() => {
     if (!connection.isOnline) {

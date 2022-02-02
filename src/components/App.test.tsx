@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import App from "./App";
 import { RecoilRoot } from "recoil";
-import { OrderBook, orderBookState } from "../state/orderBookState";
+import { OrderBook, orderBookState } from "../state/orderBook";
 
 const orderBook: OrderBook = {
   currency: "Bitcoin",
@@ -36,6 +36,7 @@ test("renders app", () => {
   const orderBookSpread = screen.getByText("Spread: 50 (5.00%)");
   expect(orderBookSpread).toBeInTheDocument();
 
+  // Check that app renders all asks and bids rows
   const rows = container.querySelectorAll(".row");
   expect(rows.length).toBe(6);
 });

@@ -2,9 +2,9 @@ import React from "react";
 import { useOrderBookDataSubscription } from "../data/useOrderBookDataSubscription";
 import styles from "./App.module.css";
 import { ErrorBoundary } from "./common/errorBoundary/ErrorBoundary";
-import { OfflineHeader } from "./offlineHeader/OfflineHeader";
+import { OfflineHeader } from "./orderBook/offlineHeader/OfflineHeader";
 import { OrderBook } from "./orderBook/OrderBook";
-import { ToggleFeed } from "./toogleFeed/ToggleFeed";
+import { ToggleFeed } from "./orderBook/toogleFeed/ToggleFeed";
 
 const App: React.FC = () => {
   const { reconnect } = useOrderBookDataSubscription();

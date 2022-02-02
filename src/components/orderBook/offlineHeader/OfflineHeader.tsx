@@ -1,7 +1,7 @@
 import React from "react";
 import { useRecoilValue } from "recoil";
-import { connectionState } from "../../state/orderBookState";
-import { Button } from "../common/button/Button";
+import { connectionState } from "../../../state/orderBook";
+import { Button } from "../../common/button/Button";
 import styles from "./OfflineHeader.module.css";
 
 interface Props {

@@ -1,4 +1,4 @@
-import { OrderBook, Currency } from "../../state/orderBookState";
+import { OrderBook, Currency } from "../../../state/orderBook";
 import { currencyToMessageProductId, mapDeltaToData, mapSnapshotToData } from "./orderBookMapping";
 import { DeltaResponseMessage, SnapshotResponseMessage, SubscriptionMessage } from "./orderBookModel";
 
@@ -12,7 +12,7 @@ let socket: WebSocket;
 
 type DataCallbacks = {
   setNewOrderBook: (data: OrderBook) => void;
-  getCurrentCurrency: () => Currency;
+  currentCurrency: Currency;
 };
 
 export function initialize(callbacks: DataCallbacks): Promise<void> {
@@ -53,7 +53,7 @@ export async function connect(): Promise<void> {
         if (parsedData?.feed === "book_ui_1_snapshot" && parsedData?.bids && parsedData?.asks) {
           const snapshot = parsedData as SnapshotResponseMessage;
 
-          if (snapshot.product_id === currencyToMessageProductId(dataCallbacks.getCurrentCurrency())) {
+          if (snapshot.product_id === currencyToMessageProductId(dataCallbacks.currentCurrency)) {
             orderBookState = mapSnapshotToData(snapshot);
             dataCallbacks.setNewOrderBook(orderBookState);
           }
@@ -62,7 +62,7 @@ export async function connect(): Promise<void> {
         if (parsedData?.feed === "book_ui_1" && parsedData?.bids && parsedData?.asks) {
           const delta = parsedData as DeltaResponseMessage;
 
-          if (delta.product_id === currencyToMessageProductId(dataCallbacks.getCurrentCurrency())) {
+          if (delta.product_id === currencyToMessageProductId(dataCallbacks.currentCurrency)) {
             orderBookState = mapDeltaToData(delta, orderBookState);
             dataCallbacks.setNewOrderBook(orderBookState);
           }
