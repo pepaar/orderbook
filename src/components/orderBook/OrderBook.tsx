@@ -5,12 +5,12 @@ import { OrderBookSide } from "./orderBookSide/OrderBookSide";
 import styles from "./OrderBook.module.css";
 import { Spread } from "./spread/Spread";
 import { useRecoilValue } from "recoil";
-import { orderBookState } from "../../state/orderBook";
+import { topOfOrderBookState } from "../../state/orderBook";
 
 const oneColumnBreakpoint = 680;
 
 export const OrderBook: React.FC = () => {
-  const orderBook = useRecoilValue(orderBookState);
+  const orderBook = useRecoilValue(topOfOrderBookState);
   const { width } = useWindowSize();
 
   if (!orderBook) {

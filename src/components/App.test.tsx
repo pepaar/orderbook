@@ -14,7 +14,7 @@ const orderBook: OrderBook = {
     { price: 950, size: 200, total: 200 },
     { price: 930, size: 60, total: 260 },
   ],
-  highestTotal: 260,
+  highestTotal: 0,
 };
 
 test("renders app", () => {

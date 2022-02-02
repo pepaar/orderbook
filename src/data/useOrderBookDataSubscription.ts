@@ -12,8 +12,8 @@ export const useOrderBookDataSubscription = () => {
   const setOrderBook = useSetRecoilState(orderBookState);
 
   React.useEffect(() => {
-    const onNewData = throttle((dataResponse: OrderBook) => {
-      setOrderBook(dataResponse);
+    const onNewData = throttle((latestData: OrderBook) => {
+      setOrderBook(latestData);
     }, throttleWaitLimitMs);
 
     api

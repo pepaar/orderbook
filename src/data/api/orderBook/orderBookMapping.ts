@@ -1,8 +1,6 @@
 import { Currency, Order, OrderBook } from "../../../state/orderBook";
 import { DeltaResponseMessage, SnapshotResponseMessage } from "./orderBookModel";
 
-const maxLevelsCount = 15;
-
 export const currencyToMessageProductId = (currency: Currency): string => {
   switch (currency) {
     case "Bitcoin":
@@ -26,12 +24,12 @@ export const messageProductIdToCurrency = (productId: string): Currency => {
 };
 
 export const mapSnapshotToData = (data: SnapshotResponseMessage): OrderBook => {
-  const { orders: bids, total: bidsTotal } = processSnapshotOrderInputArray(data.bids);
-  const { orders: asks, total: asksTotal } = processSnapshotOrderInputArray(data.asks);
+  const bids = processSnapshotOrderInputArray(data.bids);
+  const asks = processSnapshotOrderInputArray(data.asks);
 
   const book: OrderBook = {
     currency: messageProductIdToCurrency(data.product_id),
-    highestTotal: bidsTotal > asksTotal ? bidsTotal : asksTotal,
+    highestTotal: 0,
     asks,
     bids,
   };
@@ -54,22 +52,22 @@ export const mapDeltaToData = (data: DeltaResponseMessage, currentBook: OrderBoo
   processDeltaOrderInputArray(data.bids, book.bids);
   processDeltaOrderInputArray(data.asks, book.asks);
 
-  book.bids = book.bids.sort((a, b) => b.price - a.price).slice(0, maxLevelsCount);
-  book.asks = book.asks.sort((a, b) => a.price - b.price).slice(0, maxLevelsCount);
+  book.bids = book.bids.sort((a, b) => b.price - a.price);
+  book.asks = book.asks.sort((a, b) => a.price - b.price);
 
-  let bidsTotal = 0;
-  book.bids.forEach((bid) => {
-    bidsTotal += bid.size;
-    bid.total = bidsTotal;
-  });
+  book.bids.reduce((total, bid) => {
+    total += bid.size;
+    bid.total = total;
 
-  let asksTotal = 0;
-  book.asks.forEach((ask) => {
-    asksTotal += ask.size;
-    ask.total = asksTotal;
-  });
+    return total;
+  }, 0);
 
-  book.highestTotal = bidsTotal > asksTotal ? bidsTotal : asksTotal;
+  book.asks.reduce((total, ask) => {
+    total += ask.size;
+    ask.total = total;
+
+    return total;
+  }, 0);
 
   return book;
 };
@@ -87,16 +85,14 @@ const processSnapshotOrderInputArray = (inputOrders: number[][]) => {
 
     total += size;
 
-    if (orders.length < maxLevelsCount) {
-      orders.push({
-        price,
-        size,
-        total,
-      });
-    }
+    orders.push({
+      price,
+      size,
+      total,
+    });
   });
 
-  return { orders, total };
+  return orders;
 };
 
 const processDeltaOrderInputArray = (inputOrders: number[][], currentOrders: Order[]) => {

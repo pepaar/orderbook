@@ -56,8 +56,6 @@ describe("orderBookMapping", () => {
     expect(book.bids[1].total).toBe(11546);
     expect(book.bids[2].total).toBe(20155);
     expect(book.bids[3].total).toBe(185155);
-
-    expect(book.highestTotal).toBe(185155);
   });
 
   test("mapSnapshotToData", () => {
@@ -96,8 +94,6 @@ describe("orderBookMapping", () => {
     expect(book.bids[1].total).toBe(11546);
     expect(book.bids[2].total).toBe(20155);
     expect(book.bids[3].total).toBe(185155);
-
-    expect(book.highestTotal).toBe(185155);
   });
 
   test("mapDeltaToData - new, edited and removed bids and asks", () => {
@@ -152,8 +148,6 @@ describe("orderBookMapping", () => {
     expect(book.bids[1].total).toBe(7680);
     expect(book.bids[2].total).toBe(7780);
     expect(book.bids[3].total).toBe(172780);
-
-    expect(book.highestTotal).toBe(172780);
   });
 
   test("mapDeltaToData - empty bids and asks", () => {
